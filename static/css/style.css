@@ -1,0 +1,51 @@
+body {
+    background-color: skyblue;
+    min-width: 620px;
+}
+
+#main-menu, #list-table {
+    width: 100%;
+}
+
+#main-menu #btn-col {
+    text-align: right;
+}
+
+#list-table .c1 {
+    width: 50px;
+    text-align: center;
+}
+
+#list-table .c3 {
+    width: 200px;
+    text-align: center;
+}
+
+#list-table thead {
+    background-color: lightgray;
+}
+
+#list-table tbody {
+    background-color: whitesmoke;
+}
+
+#table-menu{
+    width: 100%;
+}
+
+#table-menu .c1 {
+    width: 230px;
+}
+
+#table-menu .c2 {
+    width: 110px;
+}
+
+#table-menu .c3 {
+    text-align: center;
+}
+
+div.error {
+    color: red;
+    font-weight: bold;
+}
