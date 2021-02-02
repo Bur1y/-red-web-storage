@@ -1,0 +1,24 @@
+{
+  "name": "red-web-storage",
+  "version": "1.0.0",
+  "description": "Project for the practice of UP01, create a one-page application for uploading files to the server (with authentication and other goodies).",
+  "main": "mainApp.js",
+  "scripts": {
+    "projectRun": "node mainApp.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.nntc.nnov.ru/v.slugin/up01web.git"
+  },
+  "author": "Segrey Kotomkin",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^0.12.3"
+  },
+  "dependencies": {
+    "mysql2": "^2.2.5",
+    "node-static": "^0.7.11",
+    "sequelize": "^6.5.0"
+  }
+}
