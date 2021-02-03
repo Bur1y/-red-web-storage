@@ -29,7 +29,7 @@ class User extends Model {};
 User.init({
     id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV1,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
     login: DataTypes.STRING,
@@ -51,7 +51,7 @@ class Token extends Model {};
 Token.init({
     id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV1,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
     userId: DataTypes.UUID,
