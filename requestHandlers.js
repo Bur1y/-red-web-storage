@@ -5,9 +5,10 @@ let sequelize = new Sequelize('redWebDB', 'root', '228036',
 
 let fs = require('fs');
 
+/**
+ * Item Model - begin
+ */
 class Item extends Model {}
-
-console.log('connect DATABASE');
 Item.init({
     id: {
         type: DataTypes.UUID,
@@ -20,12 +21,15 @@ Item.init({
     sequelize,
     modelName: 'items'
 });
-
 Item.sync(); // { force: true }
+/**
+ * Item Model - end
+ */
+
 /**
  * User Model - begin
  */
-class User extends Model {};
+class User extends Model {}
 User.init({
     id: {
         type: DataTypes.UUID,
@@ -47,7 +51,7 @@ User.sync(); // { force: true }
 /**
  * Token Model - begin
  */
-class Token extends Model {};
+class Token extends Model {}
 Token.init({
     id: {
         type: DataTypes.UUID,
@@ -91,13 +95,12 @@ function authorize(token, successCallback, errorCallback) {
     }
 }
 
-
 /**
  * getting list items from database and return it as JSON to frontend
  */
 function getList(request, response){
     readDataFromRequest(request, function(dataJSON) {
-        authorize(dataJSON.token, function(userId) {
+        authorize(request.headers.token, function(userId) {
                 Item.findAll({}).then(function(data) {
                     var result = [];
                     data.forEach(function (e) {
@@ -146,43 +149,43 @@ function readDataFromRequest(request, callback) {
  */
 function create(request, response){
     readDataFromRequest(request, function(dataJSON) {
-        authorize(dataJSON.token, function(userId) {
-            var imageContent = dataJSON.image;
-            var buffer = Buffer.from(imageContent, 'base64');
-            // console.log('image content', imageContent);
-            // console.log('buffer', buffer);
-            var filePath = `static/images/${userId}/`;
-            if (!fs.existsSync(filePath)) {
-                fs.mkdirSync(filePath)
-            }
-
-            filePath = filePath + dataJSON.title;
-
-            fs.writeFile(filePath, buffer, 'binary', function (err) {
-                if (err) {
-                    response.writeHead(401, {"Content-Type": "application/json"});
-                    response.write(JSON.stringify({error: err}));
-                    response.end();
-                } else {
-                    Item.create({
-                        title: dataJSON.title,
-                        filepath: filePath
-                    }).then(function (okData) {
-                        console.log(`result?`, okData);
-                        response.writeHead(200, {"Content-Type": "application/json"});
-                        response.end();
-                    }).catch(function (errData) {
-                        console.log('ERROR', errData);
-                        response.writeHead(503, {"Content-Type": "application/json"});
-                        var error = {
-                            message: errData
-                        };
-                        response.write(JSON.stringify(error));
-                        response.end();
-                    });
+        authorize(request.headers.token, function(userId) {
+                var imageContent = dataJSON.image;
+                var buffer = Buffer.from(imageContent, 'base64');
+                // console.log('image content', imageContent);
+                // console.log('buffer', buffer);
+                var filePath = `static/images/${userId}/`;
+                if (! fs.existsSync(filePath)) {
+                    fs.mkdirSync(filePath)
                 }
-            });
-        },
+
+                filePath = filePath + dataJSON.title;
+
+                fs.writeFile(filePath, buffer, 'binary', function(err) {
+                    if (err) {
+                        response.writeHead(401, { "Content-Type": "application/json" });
+                        response.write(JSON.stringify({ error: err }));
+                        response.end();
+                    } else {
+                        Item.create({
+                            title:    dataJSON.title,
+                            filepath: filePath
+                        }).then(function(okData) {
+                            console.log(`result?`, okData);
+                            response.writeHead(200, {"Content-Type": "application/json"});
+                            response.end();
+                        }).catch(function(errData) {
+                            console.log('ERROR', errData);
+                            response.writeHead(503, {"Content-Type": "application/json"});
+                            var error = {
+                                message: errData
+                            };
+                            response.write(JSON.stringify(error));
+                            response.end();
+                        });
+                    }
+                });
+            },
             function(error) {
                 response.writeHead(401, { "Content-Type": "application/json" });
                 response.write(JSON.stringify({ error: error }));
@@ -196,7 +199,7 @@ function create(request, response){
  */
 function remove(request, response) {
     readDataFromRequest(request, function (dataJSON) {
-        authorize(dataJSON.token, function(userId) {
+        authorize(request.headers.token, function(userId) {
                 console.log('DATA', dataJSON);
                 var ids = dataJSON.ids;
                 ids.forEach(function(id) {
