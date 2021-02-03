@@ -1,51 +1,181 @@
 body {
-    background-color: skyblue;
-    min-width: 620px;
+    margin: 0;
+    background: #E32636;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 800;
 }
 
-#main-menu, #list-table {
+.container {
+    width: 80%;
+    margin: auto;
+}
+
+#img{
+    margin-top: 10px;
+}
+
+
+header {
+    background: #222326;
+    height: 80px;
+}
+
+header::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+nav {
+    float: right;
+}
+ul{
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 0px;
+}
+
+nav ul {
+    list-style: none;
+    top: 10px;
+}
+
+nav li {
+    display: inline-block;
+    margin-top: 25px;
+    margin-left: 20px;
+    margin-right: 20px;
+    position: relative;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: #fff;
+}
+
+nav a::before {
+    content: '';
+    display: block;
+    height: 5px;
+    background-color: #fff;
+
+    position: center;
+    top: 0;
+    width: 0;
+
+    transition: all ease-in-out 250ms;
+}
+
+nav a:hover::before {
     width: 100%;
 }
 
-#main-menu #btn-col {
-    text-align: right;
+/*
+NavBar
+ */
+
+.login-box {
+    position: center;
+    margin-top: 10%;
+    margin-left: 40%;
+    width: 400px;
+    padding: 40px;
+    background: rgba(0,0,0,.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
 }
 
-#list-table .c1 {
-    width: 50px;
+.login-box h2 {
+    margin: 0 0 30px;
+    padding: 0;
+    color: #fff;
     text-align: center;
 }
 
-#list-table .c3 {
-    width: 200px;
-    text-align: center;
+.login-box .user-box {
+    position: relative;
 }
 
-#list-table thead {
-    background-color: lightgray;
-}
-
-#list-table tbody {
-    background-color: whitesmoke;
-}
-
-#table-menu{
+.login-box .user-box input {
     width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+}
+.login-box .user-box label {
+    position: absolute;
+    top:0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    pointer-events: none;
+    transition: .5s;
 }
 
-#table-menu .c1 {
-    width: 230px;
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+    top: -20px;
+    left: 0;
+    color: #ffffff;
+    font-size: 12px;
 }
 
-#table-menu .c2 {
-    width: 110px;
+.login-box form a {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    color: #ffffff;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 40px;
+    letter-spacing: 4px
 }
 
-#table-menu .c3 {
-    text-align: center;
+
+.login-box a span {
+    position: absolute;
+    display: block;
 }
 
-div.error {
-    color: red;
-    font-weight: bold;
+
+@keyframes btn-anim1 {
+    0% {
+        left: -100%;
+    }
+    50%,100% {
+        left: 100%;
+    }
 }
+
+
+@keyframes btn-anim2 {
+    0% {
+        top: -100%;
+    }
+    50%,100% {
+        top: 100%;
+    }
+}
+
+
+
+
+
