@@ -1,10 +1,3 @@
-// var data = [
-// {id:1, title:"Рис. 1"},
-// {id:2, title:"Рис. 2"},
-// {id:4, title:"Рис. 4"},
-// {id:5, title:"Рис. 5"}
-// ];
-
 function refresh(inputData){
     var listTableBody = document.getElementById('list-table-body');
     listTableBody.innerHTML = '';
@@ -27,21 +20,10 @@ function downloadDataFromServer(){
                 refresh(data);
             });
         } else {
-            // console.log('Somethin went wrong...');
+            console.log('Error data download...');
         }
     }).catch(function(error){
-        // console.log('Somethin went wrong...', error);
+        console.log('Error data download...', error);
         listTableBody.innerHTML = `<tr><td colspan=3><div class="error">Network Error (await 5 sec...)</div></td></tr>`;
     });
 }
-
-window.onload = function(){
-    downloadDataFromServer();
-    setInterval(function(){
-        var listTableBody = document.getElementById('list-table-body');
-        listTableBody.innerHTML = `<tr><td colspan=3>...</td></tr>`;
-        setTimeout(function(){
-            downloadDataFromServer();
-        }, 1000);
-    }, 4000);
-};
