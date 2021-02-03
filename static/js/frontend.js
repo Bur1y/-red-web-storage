@@ -27,3 +27,7 @@ function downloadDataFromServer(){
         listTableBody.innerHTML = `<tr><td colspan=3><div class="error">Network Error (await 5 sec...)</div></td></tr>`;
     });
 }
+
+window.onload = function(){
+    downloadDataFromServer();
+};
