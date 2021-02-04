@@ -1,31 +1,23 @@
-<table id="list-table" border="1" cellpadding="5" cellspacing="0">
-		<thead>
-			<tr>
-				<th class="c1">Выбор</th>
-				<th class="c2">Мои&nbsp;рисунки</th>
-				<th class="c3">Скачать</th>
-			</tr>
-		</thead>
-		<tbody id="list-table-body"></tbody>
-	</table>
-
-	<table id="table-menu">
-		<tbody>
-			<tr>
-				<td class="c1">
-					<select value="select">
-						<option value="select" selected="true">действия с выбранными...</option>
-						<option value="v1">Значение 1</option>
-						<option value="v2">Значение 2</option>
-						<option value="v3">Значение 3</option>
-					</select>
-				</td>
-				<td class="c2"><button>Скачать</button></td>
-				<td class="c3">
-					<button>Назад</button>
-					<b>1</b>/<b>3</b>
-					<button>Вперёд</button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+<form id="batch-actions-form">
+<div style="display: flex; margin: 35px">
+    <table id="list-table" border="1" cellpadding="0" cellspacing="0" style="flex: 1">
+        <thead>
+        <tr>
+            <th class="c1">Selection</th>
+            <th class="c2">My sketch</th>
+            <th class="c3">View</th>
+        </tr>
+        </thead>
+        <tbody id="list-table-body"></tbody>
+    </table>
+    </div>
+    <div id="table-menu" style="display: flex; margin: 35px">
+        <select name="action" value="select">
+            <option value="select" selected="true">Actions with selected ...</option>
+            <option value="delete">Delete</option>
+            <option value="download">Download</option>
+        </select>
+        </td>
+        <td class="c2"><input type="submit" name="Ok" /></td>
+    </div>
+    </form>

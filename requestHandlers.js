@@ -4,6 +4,7 @@ let sequelize = new Sequelize('redWebDB', 'root', '228036',
     { host: 'localhost', dialect: 'mysql' });
 
 let fs = require('fs');
+var url = require("url");
 
 /**
  * Item Model - begin
@@ -198,27 +199,75 @@ function create(request, response){
  * Функция обработки операции удаления записи из БД.
  */
 function remove(request, response) {
-    readDataFromRequest(request, function (dataJSON) {
-        authorize(request.headers.token, function(userId) {
-                console.log('DATA', dataJSON);
-                var ids = dataJSON.ids;
-                ids.forEach(function(id) {
-                    Item.destroy({
-                        where: {
-                            id: id
-                        }
-                    })
-                });
-                response.writeHead(204, {"Content-Type": "application/json"});
-                response.end();
-            },
-            function(error) {
-                response.writeHead(401, { "Content-Type": "application/json" });
-                response.write(JSON.stringify({ error: error }));
-                response.end();
+    authorize(request.headers.token, function(userId) {
+            var query = url.parse(request.url).query;
+            var ids = query.replace(/^ids=/, '').split('%2C');
+            ids.forEach(function(id) {
+                Item.destroy({
+                    where: {
+                        id: id
+                    }
+                })
             });
-    });
+            response.writeHead(204, {"Content-Type": "application/json"});
+            response.end();
+        },
+        function(error) {
+            response.writeHead(401, { "Content-Type": "application/json" });
+            response.write(JSON.stringify({ error: error }));
+            response.end();
+        });
 }
+
+function createArchiveAndGetItPath(ids){
+    var filepath = `${__dirname}/files.zip`;
+    /* Задание*!
+     *
+     * Сформировать файл filepath по следующему алгоритму:
+     * 1. из массива ids получить по id полный путь до файлов изображений
+     *    (т.е. сходить в бд, достать по id записи и получить из них полные пути до файлов)
+     * 2. на www.npmjs.com подобрать модуль, постедством которого выполнить создание архива из полученных в п.1 файлов
+     *    и положить результирующий архив по пути, указанному в filepath (перезаписываит кадлый раз этот файл)
+     * 3. ниже этой строчки происходит возврат пути до этого файла и логика передачи файла на веб приложение,
+     *    а также логика получения и сохранения файла веб приложением уже реализована!
+     */
+    return filepath;
+}
+
+/**
+ * Функция обработки операции получения нескольких изображений
+ */
+function download(request, response) {
+    authorize(request.headers.token, function(userId) {
+
+            var query = url.parse(request.url).query;
+            var ids = query.replace(/^ids=/, '').split('%2C');
+
+            var filePath = createArchiveAndGetItPath(ids);
+            var stat = fs.statSync(filePath);
+
+            response.writeHead(200, {
+                'Content-Type': 'application/zip',
+                'Content-Length': stat.size
+            });
+
+            var readStream = fs.createReadStream(filePath);
+
+            readStream.on('open', function() {
+                readStream.pipe(response);
+            });
+
+            readStream.on('error', function(err) {
+                response.end(err);
+            });
+        },
+        function(error) {
+            response.writeHead(401, { "Content-Type": "application/json" });
+            response.write(JSON.stringify({ error: error }));
+            response.end();
+        });
+}
+
 
 function register(request, response) {
     readDataFromRequest(request, function(dataJSON) {
@@ -313,6 +362,7 @@ function logout(request, response) {
 exports.getList  = getList;
 exports.create   = create;
 exports.remove   = remove;
+exports.download = download;
 exports.register = register;
 exports.login    = login;
 exports.logout   = logout;
