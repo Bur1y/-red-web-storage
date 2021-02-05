@@ -4,7 +4,6 @@ body {
     font-family: 'Work Sans', sans-serif;
     font-weight: 800;
 }
-
 .container {
     width: 80%;
     margin: auto;
@@ -13,8 +12,6 @@ body {
 #img{
     margin-top: 10px;
 }
-
-
 header {
     background: #222326;
     height: 80px;

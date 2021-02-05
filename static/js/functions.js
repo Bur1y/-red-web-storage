@@ -201,23 +201,6 @@ async function help() {
         //
     }
 }
-function downloadFile(data, filename, type) {
-    var file = new Blob([data], {type: type});
-    if (window.navigator.msSaveOrOpenBlob) // IE10+
-        window.navigator.msSaveOrOpenBlob(file, filename);
-    else { // Others
-        var a = document.createElement("a"),
-            url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function() {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }, 0);
-    }
-}
 
 async function signup() {
     try {
@@ -401,9 +384,7 @@ function downloadDataFromServer() {
     });
 }
 
-function showImageInModal(filePath, fileTitle) {
-    // console.log(`Открываем модальный диалог с изображением ${filePath}`);
-    // FIXME:
+function showImageInModal(filePath, fileTitle){
     var dlg = document.getElementById('modal-dialog');
     var dlgImg = document.getElementById('modal-dialog-img');
     var dlgTitle = document.getElementById('modal-dialog-title');

@@ -155,7 +155,7 @@ function create(request, response){
                 var buffer = Buffer.from(imageContent, 'base64');
                 // console.log('image content', imageContent);
                 // console.log('buffer', buffer);
-                var filePath = `static/images/${userId}/`;
+                var filePath = `static/storage/${userId}/`;
                 if (! fs.existsSync(filePath)) {
                     fs.mkdirSync(filePath)
                 }
@@ -230,11 +230,12 @@ function createArchiveAndGetItPath(ids){
      *    и положить результирующий архив по пути, указанному в filepath (перезаписываит кадлый раз этот файл)
      * 3. ниже этой строчки происходит возврат пути до этого файла и логика передачи файла на веб приложение,
      *    а также логика получения и сохранения файла веб приложением уже реализована!
+     *
      */
     return filepath;
 }
 
-/**
+/*
  * Функция обработки операции получения нескольких изображений
  */
 function download(request, response) {
