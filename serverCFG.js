@@ -13,7 +13,9 @@ function start(route, handle){
     }
 
     var port = 1707;
-    http.createServer(onRequest).listen(port);
+    var hostname = 'localhost   ';
+
+    http.createServer(onRequest).listen(port, hostname);
     console.log(`Server started on port ${port}`);
 }
 

@@ -6,7 +6,6 @@ var handlers = {};
 handlers['login'] = login;
 handlers['list'] = list;
 handlers['help'] = help;
-handlers['signup'] = signup;
 
 function router(state) {
     var route = document.location.hash.replace('#', ''); // login, list, e.t.c...

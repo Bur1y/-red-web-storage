@@ -8,13 +8,11 @@ function doLoginIsValidForm(login, password) {
     var minPassLen = 4;
 
     if (login.length < minLoginLen) {
-        //errors.push(`Minimal login length is ${minLoginLen}`);
-        alert(`Minimal login length is ${minLoginLen}`);
+        errors.push(`Minimal login length is ${minLoginLen}`);
     }
 
     if (password.length < minPassLen) {
-        //errors.push(`Minimal password length is ${minPassLen}`);
-        alert(`Minimal login length is ${minPassLen}`);
+        errors.push(`Minimal password length is ${minPassLen}`);
     }
 
     document.getElementById('login-form-errors').innerHTML = errors.join('<br />');
@@ -57,7 +55,7 @@ async function doLogin(event) {
             var dataJSON = JSON.parse(loginResult.data);
             localStorage.setItem('token', dataJSON.token);
             localStorage.setItem('login', dataJSON.login);
-            document.getElementById('user-name-area').innerHTML = `User : <b>${dataJSON.login}</b>`;
+            document.getElementById('user-name-area').innerHTML = `Вы вошли как: <b>${dataJSON.login}</b>`;
             document.location.hash = '#list';
         } else {
             document.getElementById('login-form-errors').innerHTML = loginResult.data;
@@ -83,8 +81,6 @@ async function doLogout() {
             if (response.ok) {
                 response.text().then(function (data) {
                     resolve({status: 'success', data: data});
-                    document.getElementById('user-name-area').innerHTML = `Unauthorized`;
-                    login()
                 });
             } else {
                 var notOkResponse = `${response.status} ${response.statusText}`;
@@ -98,41 +94,12 @@ async function doLogout() {
 
     if (logoutResult.status === 'success') {
         localStorage.removeItem('token');
-        document.location.hash = '#login';
-    }
-}
+        localStorage.removeItem('login');
+        // document.getElementById('login-form-errors').innerHTML = '';
+        setTimeout(function () {
+            document.location.hash = '#login';
+        }, 500);
 
-async function login() {
-    try {
-        document.getElementById("app").innerHTML = await new Promise(function (resolve) {
-            fetch(`/roter-modules/view-login.html`).then(function (response) {
-                if (response.ok) {
-                    response.text().then(function (data) {
-                        resolve(data);
-                    });
-                } else {
-                    resolve('ERROR DETECTED');
-                }
-            }).catch(function (error) {
-                resolve('ERROR DETECTED ' + error);
-            });
-        });
-
-        if (document.location.hash === '#login') {
-            if (await isUnauthorized()) {
-                var loginForm = document.getElementById('login-form');
-                loginForm.addEventListener('submit', function (event) {
-                    event.preventDefault();
-                    doLogin(event);
-                });
-            } else {
-                document.location.hash = '#list';
-            }
-
-        }
-
-    } catch (e) {
-        //
     }
 }
 
@@ -153,6 +120,42 @@ function isUnauthorized() {
             alert('Network Error');
         });
     });
+}
+
+async function login() {
+    try {
+        document.getElementById("app").innerHTML = await new Promise(function (resolve) {
+            fetch(`/roter-modules/view-login.html`).then(function (response) {
+                if (response.ok) {
+                    response.text().then(function (data) {
+                        resolve(data);
+                    });
+                } else {
+                    resolve('ERROR DETECTED');
+                }
+            }).catch(function (error) {
+                resolve('ERROR DETECTED ' + error);
+            });
+        });
+
+        if (document.location.hash === '#login') {
+
+            if (await isUnauthorized()) {
+                var loginForm = document.getElementById('login-form');
+                loginForm.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    doLogin(event);
+                });
+            } else {
+                document.location.hash = '#list';
+            }
+
+        }
+
+
+    } catch (e) {
+        //
+    }
 }
 
 async function list() {
@@ -202,24 +205,22 @@ async function help() {
     }
 }
 
-async function signup() {
-    try {
-        document.getElementById("app").innerHTML = await new Promise(function (resolve) {
-            fetch(`/roter-modules/view-signup.html`).then(function (response) {
-                if (response.ok) {
-                    response.text().then(function (data) {
-                        resolve(data);
-                    });
-                } else {
-                    resolve('ERROR DETECTED');
-                }
-            }).catch(function (error) {
-                resolve('ERROR DETECTED ' + error);
-            });
-        });
-    } catch (e) {
-        //
-    }
+function showImageInModal(filePath, fileTitle) {
+    // console.log(`Открываем модальный диалог с изображением ${filePath}`);
+    // FIXME:
+    var dlg = document.getElementById('modal-dialog');
+    var dlgImg = document.getElementById('modal-dialog-img');
+    var dlgTitle = document.getElementById('modal-dialog-title');
+
+    dlgTitle.innerHTML = fileTitle;
+    dlgImg.setAttribute('src', filePath);
+
+    console.log('classList before?', dlg.classList);
+    dlg.classList.remove('hide');
+    dlg.classList.add('show');
+    console.log('classList after?', dlg.classList);
+
+
 }
 
 function refresh(inputData) {
@@ -228,15 +229,17 @@ function refresh(inputData) {
 
     inputData.forEach(function (oneElement) {
         listTableBody.innerHTML += `<tr>
-		<td class="c1"><input type="checkbox" class="chb-select" name="chb-${oneElement.id}" title="Chose action"></td>
+		<td class="c1"><input type="checkbox" class="chb-select" name="chb-${oneElement.id}" title="выберите для действия"></td>
 		<td>${oneElement.title}</td>
-		<td class="c3"><button type="button" class="watch-btn" data-title="${oneElement.title}" data-path="${oneElement.filepath}">View</button></td>
+		<td class="c3"><button type="button" class="watch-btn" data-title="${oneElement.title}" data-path="${oneElement.filepath}">Просмотр</button></td>
 		</tr>`;
     });
 
 
+    // отбираем все кнопки "Просмотр" таблицы
     var buttons = document.getElementsByClassName('watch-btn');
 
+    // на каждой из отобранных кнопок удаляем слушатель события клика и регистрируем заново
     for (var btn of buttons) {
         /**
          * функция коллбэк, реагирующая на событие лкика в кнопку "Просмотр"
@@ -249,6 +252,24 @@ function refresh(inputData) {
 
         btn.removeEventListener('click', clickHandler); // удаляем
         btn.addEventListener('click', clickHandler); // регистрируем заново
+    }
+
+    function downloadFile(data, filename, type) {
+        var file = new Blob([data], {type: type});
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            var a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function () {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
     }
 
     // отобрать форму пакетной обработки данных
@@ -291,31 +312,9 @@ function refresh(inputData) {
                     headers: {
                         'token': token
                     }
-                }).then(function(response){
-                    if(response.ok){
+                }).then(function (response) {
+                    if (response.ok) {
                         list();
-                    } else {
-                        var notOkResponse = `${response.status} ${response.statusText}`;
-                        alert(notOkResponse);
-                    }
-                }).catch(function(error){
-                    alert('Network Error');
-                });
-
-                break;
-
-            case 'download':
-                var url = new URL(`${baseUrl}/api/download`);
-                url.searchParams.set('ids', batchIds);
-                fetch(url.toString(), {
-                    headers: {
-                        'token': token
-                    }
-                }).then(function(response){
-                    if(response.ok){
-                        response.blob().then(function(fileData){
-                            downloadFile(fileData, 'example.zip', 'application/zip');
-                        });
                     } else {
                         var notOkResponse = `${response.status} ${response.statusText}`;
                         alert(notOkResponse);
@@ -329,13 +328,17 @@ function refresh(inputData) {
             case 'download':
                 var url = new URL(`${baseUrl}/api/download`);
                 url.searchParams.set('ids', batchIds);
+                console.log(batchIds);
                 fetch(url.toString(), {
                     headers: {
                         'token': token
                     }
                 }).then(function (response) {
                     if (response.ok) {
-                        refresh(data);
+                        response.blob().then(function (fileData) {
+                            instance.getDataValue('filepath');
+                            downloadFile(fileData, `Akagi.jpg`, 'image');
+                        });
                     } else {
                         var notOkResponse = `${response.status} ${response.statusText}`;
                         alert(notOkResponse);
@@ -382,20 +385,4 @@ function downloadDataFromServer() {
     }).catch(function (error) {
         listTableBody.innerHTML = `<tr><td colspan=3><div class="error">Network Error (await 5 sec...)</div></td></tr>`;
     });
-}
-
-function showImageInModal(filePath, fileTitle){
-    var dlg = document.getElementById('modal-dialog');
-    var dlgImg = document.getElementById('modal-dialog-img');
-    var dlgTitle = document.getElementById('modal-dialog-title');
-
-    dlgTitle.innerHTML = fileTitle;
-    dlgImg.setAttribute('src', filePath);
-
-    console.log('classList before?', dlg.classList);
-    dlg.classList.remove('hide');
-    dlg.classList.add('show');
-    console.log('classList after?', dlg.classList);
-
-
 }
